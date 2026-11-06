@@ -1,5 +1,13 @@
 {
   "name": "claude-mods",
-  "owner": { "name": "Adwin" },
-  "plugins": []
+  "owner": {
+    "name": "Adwin"
+  },
+  "plugins": [
+    {
+      "name": "worktime",
+      "source": "./plugins/worktime",
+      "description": "Effective work-time tracker per conversation: side pane, /worktime commands, CSV export, and tools to log time to ClickUp."
+    }
+  ]
 }

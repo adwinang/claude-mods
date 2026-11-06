@@ -1,0 +1,12 @@
+{
+  "name": "worktime",
+  "version": "0.1.0",
+  "description": "Tracks effective work time per conversation (only while Claude is working, minus waits on you), with a side pane, /worktime commands, and tools Claude can use to log time to timesheets like ClickUp.",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "Adwin",
+    "url": "https://github.com/adwinang"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/adwinang/claude-mods"
+}

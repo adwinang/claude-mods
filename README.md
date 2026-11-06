@@ -20,4 +20,4 @@ Desktop app: click **+** next to the prompt box → **Plugins** → **Add market
 
 ## Mods
 
-_None yet._
+- **[worktime](plugins/worktime)** — tracks effective work time per conversation (only while Claude works, minus waits on you), with a side pane, `/worktime` commands, CSV export, and tools Claude uses to log time to ClickUp.
