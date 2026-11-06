@@ -385,16 +385,18 @@ export const register: Register = on => {
   }).catch(($, e, next) => next(e))
 
   // ── Tools Claude can call ────────────────────────────────────────────────
+  // The model reads a tool's result as text (a string or content blocks).
   on('tool.call', { tool: 'mcp__worktime__get_worktime' }, async ($, e) => {
     const r = await current($)
     const now = await $.clock.now()
     const format = (e as { format?: string }).format
     if (format === 'csv') {
       const csv = toCsv(r, now)
-      return { result: { csv }, text: csv }
+      return { result: csv, text: csv }
     }
     const summary = summaryFor(r, now)
-    return { result: summary, text: JSON.stringify(summary, null, 2) }
+    const text = JSON.stringify(summary, null, 2)
+    return { result: text, text }
   })
 
   on('tool.call', { tool: 'mcp__worktime__mark_logged' }, async ($, e) => {
@@ -422,7 +424,7 @@ export const register: Register = on => {
       ],
     }))
     const text = `Marked ${fmt(ms)} as logged to ${input.target ?? 'unknown'}${input.ref ? ` (${input.ref})` : ''}.`
-    return { result: { loggedMs: ms }, text }
+    return { result: text, text }
   })
 
   on('tool.call', { tool: 'mcp__worktime__set_task' }, async ($, e) => {
@@ -430,7 +432,8 @@ export const register: Register = on => {
     if (!input.id) return { deny: 'id is required.' }
     const task: TaskPin = { id: input.id, url: input.url, name: input.name }
     await mutate($, r => ({ ...r, task }))
-    return { result: { task }, text: `Pinned task ${task.name ?? task.id}.` }
+    const text = `Pinned task ${task.name ?? task.id}.`
+    return { result: text, text }
   })
 
   // ── /worktime ────────────────────────────────────────────────────────────

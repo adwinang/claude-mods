@@ -44,7 +44,7 @@ test('counts only working time across two turns, minus a question wait', async (
   await $.turn.complete({ reason: 'answer', answer: 'ok', durationMs: 0, isAborted: false, turnId: 't' })
 
   const got = await $.tool.call({ tool: 'mcp__worktime__get_worktime' } as never)
-  const r = got.result as { effectiveMs: number; waitExcludedMs: number; unloggedMs: number; turns: unknown[] }
+  const r = JSON.parse(got.text ?? '') as { effectiveMs: number; waitExcludedMs: number; unloggedMs: number; turns: unknown[] }
   expect(r.turns.length).toBe(2)
   expect(r.effectiveMs).toBe(30 * MIN)
   expect(r.waitExcludedMs).toBe(3 * MIN)
@@ -54,7 +54,7 @@ test('counts only working time across two turns, minus a question wait', async (
   const adj = await $.command.run({ command: 'worktime', args: 'adjust +15m review' } as never)
   expect(adj.text).toBe('Adjusted by 15m 00s.')
   await $.command.run({ command: 'worktime', args: 'exclude 1' } as never)
-  const after = (await $.tool.call({ tool: 'mcp__worktime__get_worktime' } as never)).result as { effectiveMs: number }
+  const after = JSON.parse((await $.tool.call({ tool: 'mcp__worktime__get_worktime' } as never)).text ?? '') as { effectiveMs: number }
   expect(after.effectiveMs).toBe(35 * MIN)
 
   const marked = await $.tool.call({ tool: 'mcp__worktime__mark_logged', target: 'clickup', ref: 'te_1' } as never)
@@ -85,7 +85,7 @@ test('a turn left open when the app closed is closed at the last moment seen', a
     },
   })
   await $.session.start({ cwd: '/w', surface: 'desktop', isInteractive: true })
-  const r = (await $.tool.call({ tool: 'mcp__worktime__get_worktime' } as never)).result as { effectiveMs: number; isWorkingNow: boolean }
+  const r = JSON.parse((await $.tool.call({ tool: 'mcp__worktime__get_worktime' } as never)).text ?? '') as { effectiveMs: number; isWorkingNow: boolean }
   expect(r.isWorkingNow).toBe(false)
   expect(r.effectiveMs).toBe(20e3)
 })
